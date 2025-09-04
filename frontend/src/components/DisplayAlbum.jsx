@@ -1,14 +1,28 @@
-import React, { useContext } from "react";
+import React, { useContext} from "react";
 import Navbar from "./Navbar";
 import { useParams } from "react-router-dom";
-import { albumsData, songsData } from "../assets/assets";
+
 import { assets } from "../assets/assets";
 import { PlayerContext } from "../context/PlayerContext";
-const DisplayAlbum = () => {
+import { useEffect ,useState} from "react";
+const DisplayAlbum = ({album}) => {
   const { id } = useParams();
-  const albumData = albumsData[id];
-  const {playWithId}=useContext(PlayerContext)
-  return (
+  const [albumData,setAlbumData]=useState("");
+  const {playWithId,albumsData,songsData}=useContext(PlayerContext)
+  useEffect(()=>
+  {
+    albumsData.map((item)=>
+    {
+      //here id we are getting from the id using the params 
+      if(item._id===id)
+      {
+        setAlbumData(item);
+
+      }
+    })
+
+  },[]);
+  return  albumData?(
     <>
       <Navbar />
       <div className="mt-10 flex gap-8 flex-col md:flex-row md:items-end">
@@ -44,8 +58,8 @@ const DisplayAlbum = () => {
         <img className="m-auto w-4" src={assets.clock_icon} alt="" />
       </div>
       <hr />
-      {songsData.map((item, index) => (
-        <div onClick={()=>playWithId(item.id)}
+      {songsData.filter((item)=>item.album===album.name).map((item, index) => (
+        <div onClick={()=>playWithId(item._id)}
           key={index}
           className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-2 items-center"
         >
@@ -60,7 +74,7 @@ const DisplayAlbum = () => {
         </div>
       ))}
     </>
-  );
+  ):null;
 };
 
 export default DisplayAlbum;
