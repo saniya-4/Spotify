@@ -1,10 +1,14 @@
-import React,{useRef,useContext} from 'react'
+import React,{useContext,useState} from 'react'
 import Sidebar from './components/Sidebar'
 import Player from './components/Player'
 import Display from './components/Display'
 import { PlayerContext } from './context/PlayerContext'
+import PlayList from './components/PlayList'
+import {useUser} from '@clerk/clerk-react'
 const App = () => {
-  const {audioRef,track,songsData}=useContext(PlayerContext)
+  const {audioRef,track,songsData}=useContext(PlayerContext);
+  const {user}=useUser();
+  const [showPlaylistForm,setShowPlaylistForm]=useState(false);
   return (
     <div className="h-screen bg-black">
       {
@@ -12,10 +16,16 @@ const App = () => {
         ?
         <>
          <div className="h-[90%] flex">
-        <Sidebar/>
-        <Display/>
+        <Sidebar onCreatePlaylist={()=>setShowPlaylistForm(true)}/>
+          {
+            showPlaylistForm?
+            (<PlayList userId={user?.id}/>):
+            ( <Display/>)
+          }
+       
+        
       </div>
-      <Player/>
+      <Player />
         </>:null
 
       }

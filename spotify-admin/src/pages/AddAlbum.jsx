@@ -25,7 +25,9 @@ const AddAlbum = () => {
      if(response.data.success)
      {
       toast.success("Album added");
+      console.log("Album Added");
       setDesc("");
+
       setImage(null);
       setName("");
      }
@@ -33,9 +35,12 @@ const AddAlbum = () => {
       toast.error("Something went wrong");
      }
       
-    } catch (error) {
-      toast.error("Error occured");
-    }
+    } 
+    catch (error) {
+      console.log("error occured"+error);
+     toast.error("Error occured");
+     }
+    
     setLoading(false);
 
   }

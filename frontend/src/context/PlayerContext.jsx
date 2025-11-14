@@ -81,7 +81,7 @@ const PlayerContextProvider=(props)=>
         setSongsData(response.data.songs);
         setTrack(response.data.songs[0]);
       } catch (error) {
-        
+        console.log(error);
       }
     }
     const getAlbumsData=async()=>
@@ -90,7 +90,7 @@ const PlayerContextProvider=(props)=>
             const response=await axios.get(`${url}/api/album/list`);
             setAlbumsData(response.data.albums);
         } catch (error) {
-            
+            console.log(error);
         }
     }
     useEffect(()=>
