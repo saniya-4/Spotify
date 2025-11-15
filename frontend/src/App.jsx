@@ -8,7 +8,8 @@ import {useUser} from '@clerk/clerk-react'
 const App = () => {
   const {audioRef,track,songsData}=useContext(PlayerContext);
   const {user}=useUser();
-  const [showPlaylistForm,setShowPlaylistForm]=useState(false);
+  
+  const [activePage,setActivePage]=useState('display');
   return (
     <div className="h-screen bg-black">
       {
@@ -16,9 +17,10 @@ const App = () => {
         ?
         <>
          <div className="h-[90%] flex">
-        <Sidebar onCreatePlaylist={()=>setShowPlaylistForm(true)}/>
+        <Sidebar  onCreatePlaylist={()=>setActivePage('playlist')}
+          onHome={()=>setActivePage('display')}/>
           {
-            showPlaylistForm?
+            activePage==='playlist'?
             (<PlayList userId={user?.id}/>):
             ( <Display/>)
           }
