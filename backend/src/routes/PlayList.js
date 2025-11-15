@@ -78,4 +78,22 @@ router.get("/user/:userId",async(req,res)=>
     res.status(500).json({error:err.message});
   }
 })
+//to get the songs based on the search to add in the playlist
+router.get("/search",async(req,res)=>
+{
+  try{
+    const {q}=req.query;
+    if(!q)
+    {
+      return res.status(400).json({error:"Query parameter is required"});
+    }
+    const songs=await Song.find({
+      name:{$regex:q,$options:"i"}
+    }).limit(10);
+    res.status(200).json({songs});
+  }catch(err)
+  {
+    res.status(500).json({error:err.message});
+  }
+})
 module.exports = router;

@@ -9,7 +9,9 @@ const App = () => {
   const {audioRef,track,songsData}=useContext(PlayerContext);
   const {user}=useUser();
   
+  
   const [activePage,setActivePage]=useState('display');
+  const [activePlaylist,setActivePlaylist]=useState(null);
   return (
     <div className="h-screen bg-black">
       {
@@ -17,13 +19,18 @@ const App = () => {
         ?
         <>
          <div className="h-[90%] flex">
-        <Sidebar  onCreatePlaylist={()=>setActivePage('playlist')}
-          onHome={()=>setActivePage('display')}/>
+        <Sidebar  onCreatePlaylist={()=>{setActivePage('playlist'); setActivePlaylist(null)}}
+          onHome={()=>{setActivePage('display');setActivePlaylist(null)}}
+          onPlaylistClick={(playlist)=>{
+            setActivePage('display');
+            setActivePlaylist(playlist)
+          }}/>
           {
             activePage==='playlist'?
             (<PlayList userId={user?.id}/>):
-            ( <Display/>)
+            ( <Display activePlaylist={activePlaylist}/>)
           }
+          
        
         
       </div>
