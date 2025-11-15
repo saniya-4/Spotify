@@ -1,27 +1,56 @@
-export const createPlaylist=async(userId,name)=>
-{
-    try {
-    const response = await fetch("http://localhost:4000/api/playlist/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, name }),
-    });
-    return await response.json();
+import axios from "axios";
+
+export const createPlaylist = async (userId, name, description, imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("name", name);
+    formData.append("description", description);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const res = await axios.post(
+      "http://localhost:4000/api/playlist/create",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return res.data;
   } catch (err) {
-    console.error("Create playlist failed:", err);
-    return { error: err.message };
+    console.log("Create playlist failed", err);
+    return { error: err.response?.data?.error || err.message };
   }
-}
+};
+
+
 export const addSongToPlaylist = async (playlistId, songId) => {
   try {
-    const response = await fetch("http://localhost:4000/api/playlist/add-song", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playlistId, songId }),
-    });
-    return await response.json();
+    const res = await axios.post(
+      "http://localhost:4000/api/playlist/add-song",
+      { playlistId, songId }
+    );
+
+    return res.data;
   } catch (err) {
-    console.error("Add song to playlist failed:", err);
-    return { error: err.message };
+    console.log("Add song failed", err);
+    return { error: err.response?.data?.error || err.message };
+  }
+};
+
+
+export const getUserPlaylist = async (userId) => {
+  try {
+    const res = await axios.get(
+      `http://localhost:4000/api/playlist/user/${userId}`
+    );
+    return res.data;
+  } catch (err) {
+    return { error: err.response?.data?.error || "Failed to fetch playlists" };
   }
 };
