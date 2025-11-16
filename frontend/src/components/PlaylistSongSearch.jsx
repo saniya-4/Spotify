@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { searchSongs } from "../api/songApi";
 import { addSongToPlaylist, getPlaylistById } from "../api/playListApi";
+import { PlaylistContext } from "../context/PlaylistContext";
+import { PlayerContext } from "../context/PlayerContext";
 
 const PlaylistSongSearch = ({ playlistId }) => {
   const [query, setQuery] = useState("");
@@ -10,6 +12,23 @@ const PlaylistSongSearch = ({ playlistId }) => {
   const [songs, setSongs] = useState([]);
   const [playlistInfo, setPlaylistInfo] = useState(null);
 
+  // Context
+  const {
+    currentTrack,
+    playStatus,
+    playPlaylist,
+    playFromIndex,
+    registerAudioRef,
+  } = useContext(PlaylistContext);
+
+  const { audioRef } = useContext(PlayerContext);
+
+  // Register audioRef in PlaylistContext
+  useEffect(() => {
+    if (audioRef.current) registerAudioRef(audioRef.current);
+  }, [audioRef]);
+
+  // Load playlist
   useEffect(() => {
     if (!playlistId) return;
 
@@ -27,6 +46,7 @@ const PlaylistSongSearch = ({ playlistId }) => {
     loadPlaylist();
   }, [playlistId]);
 
+  // Search songs
   useEffect(() => {
     if (!query) return setResults([]);
     const timeout = setTimeout(async () => {
@@ -38,6 +58,7 @@ const PlaylistSongSearch = ({ playlistId }) => {
     return () => clearTimeout(timeout);
   }, [query]);
 
+  // Add song to playlist
   const handleAddSong = async (songId) => {
     if (!playlistId) return alert("Select a playlist first");
     try {
@@ -45,9 +66,8 @@ const PlaylistSongSearch = ({ playlistId }) => {
       const res = await addSongToPlaylist(playlistId, songId);
       if (res.error) alert(res.error);
       else alert("Song added successfully");
-      const updatedPlaylist=await getPlaylistById(playlistId);
-      if(updatedPlaylist.playlist)
-      {
+      const updatedPlaylist = await getPlaylistById(playlistId);
+      if (updatedPlaylist.playlist) {
         setSongs(updatedPlaylist.playlist.songs || []);
       }
     } catch (err) {
@@ -85,9 +105,19 @@ const PlaylistSongSearch = ({ playlistId }) => {
               <p className="text-gray-400 text-sm">📝 {playlistInfo.desc}</p>
             )}
             <p className="text-gray-400 mt-1 text-sm">
-              📚 {songs.length} song{songs.length > 1 ? "s" : ""} • ⏱️ {minutes}
-              m {seconds}s
+              📚 {songs.length} song{songs.length > 1 ? "s" : ""} • ⏱️ {minutes}m{" "}
+              {seconds}s
             </p>
+
+            {/* Play All button */}
+            {songs.length > 0 && (
+              <button
+                onClick={() => playPlaylist(songs)}
+                className="mt-2 px-4 py-2 bg-green-500 rounded font-bold text-black"
+              >
+                ▶ Play All
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -97,35 +127,42 @@ const PlaylistSongSearch = ({ playlistId }) => {
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Songs in this playlist</h2>
           <div className="flex flex-col gap-3">
-           {songs.map((song, idx) => (
-  <div
-    key={song._id}
-    className="flex items-center gap-10 p-3 hover:bg-[#242424] rounded"
-  >
-    {/* Song Number */}
-    <p className="text-gray-400 w-6 text-right">{idx + 1}.</p>
+            {songs.map((song, idx) => {
+              const isPlaying =
+                currentTrack?._id === song._id && playStatus ? true : false;
 
-    {/* Song Image */}
-    <img
-      src={song.image}
-      alt={song.name}
-      className="w-16 h-16 object-cover rounded"
-    />
+              return (
+                <div
+                  key={song._id}
+                  className={`flex items-center gap-10 p-3 hover:bg-[#242424] rounded ${
+                    isPlaying ? "bg-[#1db954]" : ""
+                  }`}
+                  onClick={() => playFromIndex(idx)}
+                >
+                  {/* Song Number */}
+                  <p className="text-gray-400 w-6 text-right">{idx + 1}.</p>
 
-    {/* Song Name + Album */}
-    <div className="flex flex-col justify-center flex-1 ml-2">
-      <div className="flex items-center gap-20">
-        <p className="font-semibold text-white">{song.name}</p>
-        <span className="text-gray-400 text-sm">🎼 {song.album}</span>
-      </div>
-      <p className="text-gray-500 text-xs mt-1">{song.desc}</p> {/* optional description */}
-    </div>
+                  {/* Song Image */}
+                  <img
+                    src={song.image}
+                    alt={song.name}
+                    className="w-16 h-16 object-cover rounded"
+                  />
 
-    {/* Duration */}
-    <p className="font-bold text-sm ml-auto">⏱️ {song.duration}</p>
-  </div>
-))}
+                  {/* Song Name + Album */}
+                  <div className="flex flex-col justify-center flex-1 ml-2">
+                    <div className="flex items-center gap-20">
+                      <p className="font-semibold text-white">{song.name}</p>
+                      <span className="text-gray-400 text-sm">🎼 {song.album}</span>
+                    </div>
+                    <p className="text-gray-500 text-xs mt-1">{song.desc}</p>
+                  </div>
 
+                  {/* Duration */}
+                  <p className="font-bold text-sm ml-auto">⏱️ {song.duration}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -154,9 +191,7 @@ const PlaylistSongSearch = ({ playlistId }) => {
                 alt={song.name}
                 className="w-full h-24 object-cover rounded"
               />
-              <p className="text-white font-semibold mt-2 text-center">
-                {song.name}
-              </p>
+              <p className="text-white font-semibold mt-2 text-center">{song.name}</p>
               <p className="text-gray-400 text-sm">{song.artist}</p>
               <button
                 onClick={() => handleAddSong(song._id)}

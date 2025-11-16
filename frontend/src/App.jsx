@@ -5,6 +5,7 @@ import Display from './components/Display'
 import { PlayerContext } from './context/PlayerContext'
 import PlayList from './components/PlayList'
 import {useUser} from '@clerk/clerk-react'
+
 const App = () => {
   const {audioRef,track,songsData}=useContext(PlayerContext);
   const {user}=useUser();
@@ -14,6 +15,7 @@ const App = () => {
   const [activePlaylist,setActivePlaylist]=useState(null);
   return (
     <div className="h-screen bg-black">
+    
       {
         songsData.length!=0
         ?

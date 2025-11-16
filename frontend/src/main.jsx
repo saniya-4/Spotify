@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.jsx'
 import PlayerContextProvider from './context/PlayerContext.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
+import PlaylistProvider from './context/PlaylistProvider.jsx'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -16,7 +17,10 @@ createRoot(document.getElementById('root')).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
      <BrowserRouter>
     <PlayerContextProvider>
-       <App />
+      <PlaylistProvider>
+        <App />
+      </PlaylistProvider>
+      
     </PlayerContextProvider>
       
     </BrowserRouter>
