@@ -96,4 +96,44 @@ router.get("/search",async(req,res)=>
     res.status(500).json({error:err.message});
   }
 })
+router.post("/:playlistId/add-song",async(req,res)=>
+{
+  try{
+    const {playlistId}=req.params;
+    const {songId}=req.body;
+    if(!songId)
+    {
+      return res.status(400).json({error:"Song is required"});
+    }
+    const playlist=await Playlist.findById(playlistId);
+    if(!playlist)
+    {
+      return res.status(404).json({error:"Playlist not found"});
+    }
+    if(playlist.songs.includes(songId))
+    {
+      return res.status(400).json({error:"Song already present in the playlist"});
+    }
+    playlist.songs.push(songId);
+    await playlist.save();
+    res.status(200).json({message:"Song added to the playlist successfully",playlist});
+  }catch(error)
+  {
+    res.status(500).json({error:error.message})
+  }
+})
+router.get("/:playlistId",async(req,res)=>{
+  try{
+    const {playlistId}=req.params;
+    const playlist=await Playlist.findById(playlistId).populate("songs");
+    if(!playlist)
+    {
+      return res.status(404).json({error:"Playlist not found"});
+    }
+    res.status(200).json({playlist});
+  }catch(err)
+  {
+    res.status(500).json({error:err.message});
+  }
+})
 module.exports = router;

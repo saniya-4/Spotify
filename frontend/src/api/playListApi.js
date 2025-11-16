@@ -29,19 +29,6 @@ export const createPlaylist = async (userId, name, description, imageFile) => {
 };
 
 
-export const addSongToPlaylist = async (playlistId, songId) => {
-  try {
-    const res = await axios.post(
-      "http://localhost:4000/api/playlist/add-song",
-      { playlistId, songId }
-    );
-
-    return res.data;
-  } catch (err) {
-    console.log("Add song failed", err);
-    return { error: err.response?.data?.error || err.message };
-  }
-};
 
 
 export const getUserPlaylist = async (userId) => {
@@ -52,5 +39,25 @@ export const getUserPlaylist = async (userId) => {
     return res.data;
   } catch (err) {
     return { error: err.response?.data?.error || "Failed to fetch playlists" };
+  }
+};
+export const addSongToPlaylist=async(playlistId,songId)=>
+{
+  try{
+    const res=await axios.post(`http://localhost:4000/api/playlist/${playlistId}/add-song`,{songId});
+    return res.data;
+  }catch(err)
+  {
+    console.log("Add song failed",err.resonse?.data || err.message);
+    return {error :err.response?.data?.error || err.message};
+  }
+}
+export const getPlaylistById = async (playlistId) => {
+  try {
+    const res = await axios.get(`http://localhost:4000/api/playlist/${playlistId}`);
+    return res.data; // returns { playlist: {...} } directly
+  } catch(err) {
+    console.log(err);
+    return { error: "Failed to fetch playlist" };
   }
 };
