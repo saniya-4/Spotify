@@ -139,17 +139,17 @@ const PlaylistSongSearch = ({ playlistId }) => {
                   }`}
                   onClick={() => playFromIndex(idx)}
                 >
-                  {/* Song Number */}
+                  
                   <p className="text-gray-400 w-6 text-right">{idx + 1}.</p>
 
-                  {/* Song Image */}
+                 
                   <img
                     src={song.image}
                     alt={song.name}
                     className="w-16 h-16 object-cover rounded"
                   />
 
-                  {/* Song Name + Album */}
+                 
                   <div className="flex flex-col justify-center flex-1 ml-2">
                     <div className="flex items-center gap-20">
                       <p className="font-semibold text-white">{song.name}</p>
@@ -158,7 +158,7 @@ const PlaylistSongSearch = ({ playlistId }) => {
                     <p className="text-gray-500 text-xs mt-1">{song.desc}</p>
                   </div>
 
-                  {/* Duration */}
+                 
                   <p className="font-bold text-sm ml-auto">⏱️ {song.duration}</p>
                 </div>
               );
@@ -167,7 +167,7 @@ const PlaylistSongSearch = ({ playlistId }) => {
         </div>
       )}
 
-      {/* Search & Add Songs */}
+    
       <div className="mt-6">
         <h2 className="text-2xl font-bold mb-2">Add More Songs</h2>
         <input

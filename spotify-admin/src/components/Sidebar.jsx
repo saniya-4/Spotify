@@ -27,7 +27,11 @@ const Sidebar = () => {
             <p className="hidden sm:block">List Album </p>
 
         </NavLink>
-
+         <NavLink to='/ad-requests' className="flex items-center gap-2.5 text-gray-800 bg-white border-black p-2 pr-[max(8vw,10px)] drop-shadow-[-4px_4px_#00FF5B] text-sm font-medium">
+          {/* using a simple emoji since you don't have an asset for this yet */}
+          <span className="w-5 text-center text-base">📋</span>
+          <p className="hidden sm:block">Ad Requests</p>
+        </NavLink>
       </div>
 
     </div>

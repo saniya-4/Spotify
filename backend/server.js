@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express=require("express");
 const cors=require('cors');
 const songRouter=require('./src/routes/songRoutes.js');
@@ -6,6 +7,8 @@ const connectCloudinary = require("./src/config/cloudinary.js");
 const albumRouter = require("./src/routes/albumRoute.js");
 const playlistRoutes=require('./src/routes/PlayList.js')
 const userRoute=require("./src/routes/userRoutes.js")
+const aiRoutes = require("./src/routes/aiRoutes.js");
+const adRequestRoute=require('./src/routes/adRequestRoute.js');
 require('dotenv').config();
 const app=express();
 const port=process.env.PORT ||4000;
@@ -21,7 +24,8 @@ app.use('/api/album',albumRouter)
 app.use('/api/playlist',playlistRoutes);
 app.use("/api/users",userRoute);
 // to connect backend and frontend
-
+app.use("/api/ai", aiRoutes);
+app.use("/api/ad-requests", adRequestRoute);
 
 app.get('/',(req,res)=>
 {

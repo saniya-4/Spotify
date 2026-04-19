@@ -7,9 +7,8 @@ const PlaylistProvider = ({ children }) => {
   const [playlistIndex, setPlaylistIndex] = useState(0);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [playStatus, setPlayStatus] = useState(false);
-  const [audioRef, setAudioRef] = useState(null); // pass the audioRef from PlayerContext
+  const [audioRef, setAudioRef] = useState(null);
 
-  // Set the audioRef from PlayerContext (optional)
   const registerAudioRef = (ref) => {
     setAudioRef(ref);
   };

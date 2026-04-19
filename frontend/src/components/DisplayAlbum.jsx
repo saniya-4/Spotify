@@ -22,6 +22,17 @@ const DisplayAlbum = ({album}) => {
     })
 
   },[]);
+  const timeAgo = (date) => {
+  if (!date) return "";
+
+  const diff = Date.now() - new Date(date).getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (days === 0) return "Today";
+  if (days === 1) return "1 day ago";
+  return `${days} days ago`;
+};
+
   return  albumData?(
     <>
       <Navbar />
@@ -69,7 +80,7 @@ const DisplayAlbum = ({album}) => {
             {item.name}
           </p>
           <p className="text-[15px]">{albumData.name}</p>
-          <p className="text-[15px] hidden sm:block">5 days ago</p>
+          <p className="text-[15px] hidden sm:block">{timeAgo(albumData.createdAt)}</p>
           <p className="text-[15px] text-center">{item.duration}</p>
         </div>
       ))}

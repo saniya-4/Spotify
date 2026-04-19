@@ -1,5 +1,8 @@
 import { createContext,useRef,useState,useEffect } from "react";
 import axios from 'axios';
+
+import { useClerk ,useUser} from "@clerk/clerk-react";
+
 export const PlayerContext=createContext();
 const PlayerContextProvider=(props)=>
 {
@@ -7,6 +10,9 @@ const PlayerContextProvider=(props)=>
     const seekBg=useRef();
     const seekBar=useRef();
     const url='http://localhost:4000';
+    const {user}=useUser();
+    const isLoggedIn=!!user;
+    const {openSignIn}=useClerk();
     const [songsData,setSongsData]=useState([]);
     const [albumsData,setAlbumsData]=useState([]);
     const [track,setTrack]=useState(songsData[0]);
@@ -23,6 +29,10 @@ const PlayerContextProvider=(props)=>
     })
     const play=()=>
     {
+        if(!isLoggedIn)
+        {
+            return openSignIn();
+        }
         audioRef.current.play();
         setPlayStatus(true);
     }
@@ -32,9 +42,13 @@ const PlayerContextProvider=(props)=>
         audioRef.current.pause();
         setPlayStatus(false);
     }
-    //for choosing which song to play
+    
     const playWithId=async(id)=>
     {
+          if(!isLoggedIn)
+        {
+            return openSignIn();
+        }
         await songsData.map((item)=>{
             if(id===item._id)
             {
@@ -47,6 +61,10 @@ const PlayerContextProvider=(props)=>
     }
     const previous=async()=>
     {
+          if(!isLoggedIn)
+        {
+           return openSignIn();
+        }
         songsData.map(async(item,index)=>
         {
             if(track._id===item._id && index>0)
@@ -59,6 +77,10 @@ const PlayerContextProvider=(props)=>
     }
     const next=async()=>
     {
+          if(!isLoggedIn)
+        {
+           return openSignIn();
+        }
         songsData.map(async(item,index)=>
         {
          if(track._id===item._id && index<songsData.length)
@@ -142,6 +164,7 @@ const PlayerContextProvider=(props)=>
     return(
         <PlayerContext.Provider value={contextValue}>
             {props.children}
+         
         </PlayerContext.Provider>
     )
 }

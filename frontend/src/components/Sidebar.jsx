@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { assets } from "../assets/assets";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { getUserPlaylist } from "../api/playListApi";
 import { useUser } from "@clerk/clerk-react";
 
-const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
+const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick, onAI }) => {
   const navigate = useNavigate();
   const { user } = useUser();
   const userId = user?.id;
@@ -32,13 +32,26 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
       {/* Top Section */}
       <div className="bg-[#121212] h-[15%] rounded flex flex-col justify-around">
         <div
-          onClick={() => { setShowPlaylists(false); navigate('/'); onHome(); }}
+          onClick={() => {
+            setShowPlaylists(false);
+            navigate("/");
+            onHome();
+          }}
           className="flex items-center gap-3 pl-8 cursor-pointer"
         >
           <img className="w-6" src={assets.home_icon} alt="" />
           <p className="font-bold">Home</p>
         </div>
-        
+      </div>
+      <div
+        onClick={() => {
+          setShowPlaylists(false);
+          onAI();
+        }}
+        className="flex items-center gap-3 pl-8 cursor-pointer"
+      >
+        <span className="text-xl">🎵</span>
+        <p className="font-bold">Create Your Own Song</p>
       </div>
 
       {/* Library Section */}
@@ -48,13 +61,8 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
             <img className="w-8" src={assets.stack_icon} alt="" />
             <p className="font-semibold">Your Library</p>
           </div>
-          <div className="flex items-center gap-3">
-            <img className="w-5" src={assets.arrow_icon} alt="" />
-            <img className="w-5" src={assets.plus_icon} alt="" />
-          </div>
         </div>
 
-        {/* Initial Options */}
         {!showPlaylists && (
           <>
             <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-center">
@@ -69,7 +77,9 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
             </div>
             <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-center mt-4">
               <h1>Browse Your Playlists</h1>
-              <p className="font-light">Mood Swings Go on To Yours Comfort place</p>
+              <p className="font-light">
+                Mood Swings Go on To Yours Comfort place
+              </p>
               <button
                 onClick={handleShowPlaylists}
                 className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4"
@@ -80,16 +90,17 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
           </>
         )}
 
-        {/* Show User Playlists */}
         {showPlaylists && (
           <div className="p-2">
             {playlists.length === 0 ? (
-              <div className='p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-center'>
+              <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-center">
                 <h1>No Playlists Yet!</h1>
-                <p className='font-light'>Please create one to start enjoying your music.</p>
+                <p className="font-light">
+                  Please create one to start enjoying your music.
+                </p>
                 <button
                   onClick={onCreatePlaylist}
-                  className='px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4'
+                  className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4"
                 >
                   Create Playlist
                 </button>
@@ -98,7 +109,7 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
               <>
                 <h2 className="text-lg font-bold mb-2 px-2">Your Playlists</h2>
                 <div className="flex flex-col gap-2 overflow-y-auto h-[70vh] px-2">
-                  {playlists.map(pl => (
+                  {playlists.map((pl) => (
                     <div
                       key={pl._id}
                       className="flex items-center gap-3 cursor-pointer hover:bg-[#2a2a2a] p-2 rounded-md"
@@ -111,7 +122,9 @@ const Sidebar = ({ onCreatePlaylist, onHome, onPlaylistClick }) => {
                       />
                       <div>
                         <p className="font-semibold">{pl.name}</p>
-                        <p className="text-sm text-gray-400">{pl.description || "No description"}</p>
+                        <p className="text-sm text-gray-400">
+                          {pl.description || "No description"}
+                        </p>
                       </div>
                     </div>
                   ))}

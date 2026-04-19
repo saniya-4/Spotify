@@ -9,6 +9,7 @@ import ListAlbum from './pages/ListAlbum';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import Default from './pages/Default';
+import AdRequests from './pages/AdRequests';
 export const url='http://localhost:4000';
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path='/add-album' element={<AddAlbum/>}/>
             <Route path='/list-song' element={<ListSong/>}/>
             <Route path='/list-album' element={<ListAlbum/>}/>
+            <Route path='/ad-requests' element={<AdRequests />} />
            </Routes>
         </div>
       </div>
